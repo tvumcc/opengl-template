@@ -1,0 +1,8 @@
+[submodule "lib/glm"]
+	path = lib/glm
+	url = https://github.com/g-truc/glm.git
+	tag = 1.0.1
+[submodule "lib/glfw"]
+	path = lib/glfw
+	url = https://github.com/glfw/glfw.git
+	tag = 3.4
