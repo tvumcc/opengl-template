@@ -1,3 +1,7 @@
+#include <imgui/imgui.h>
+#include <imgui/backends/imgui_impl_glfw.h>
+#include <imgui/backends/imgui_impl_opengl3.h>
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -38,6 +42,14 @@ int main() {
 	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.IniFilename = NULL;
+	ImGui::StyleColorsDark();
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplOpenGL3_Init("#version 460");
+
 	unsigned int VAO, VBO, EBO;
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
@@ -70,6 +82,7 @@ int main() {
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	stbi_image_free(data);
+	float brightness = 1.0f;
 
 	Shader shader("shaders/default.vert", "shaders/default.frag");
     shader.bind();
@@ -80,16 +93,34 @@ int main() {
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
+		// ImGui Stuff Goes Here
+		ImGui::ShowDemoWindow();
+		ImGui::Begin("Menu");
+		ImGui::SliderFloat("Brightness", &brightness, 0.0f, 1.0f);
+		ImGui::End();
+
 		shader.bind();
+		shader.set_float("brightness", brightness);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture);
 
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
+
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 
 	glfwTerminate();
 	return 0;
