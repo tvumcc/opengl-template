@@ -35,12 +35,14 @@ int main() {
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "OpenGL 4.6 Template", NULL, NULL);
 	glfwMakeContextCurrent(window);
 	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+	std::cout << "Current Version: " << glGetString(GL_VERSION) << std::endl;
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -72,7 +74,6 @@ int main() {
 	int width, height, channels;
 	stbi_set_flip_vertically_on_load(true);
 	unsigned char* data = stbi_load("assets/aurora.png", &width, &height, &channels, 0);
-	std::cout << channels << std::endl;
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
