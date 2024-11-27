@@ -17,7 +17,7 @@ void checkErrors(unsigned int ID, ShaderType type, const std::string& filename) 
         glGetProgramiv(ID, GL_LINK_STATUS, &success);
         if (!success) {
             glGetProgramInfoLog(ID, 512, NULL, error_log);
-            std::cout << "Problem linking " << filename << "\n" << error_log << std::endl;
+            std::cout << "Problem linking " << filename << ":\n" << error_log << std::endl;
         }
     } else {
         std::string type_strs[3] = {"VERTEX", "FRAGMENT", "COMPUTE"};
@@ -26,7 +26,7 @@ void checkErrors(unsigned int ID, ShaderType type, const std::string& filename) 
         glGetShaderiv(ID, GL_COMPILE_STATUS, &success);
         if (!success) {
             glGetShaderInfoLog(ID, 512, NULL, error_log);
-            std::cout << "Problem compiling VERTEX shader: " << filename << "\n" << error_log << std::endl;
+            std::cout << "Problem compiling " << type_str << " shader " << filename << ":\n" << error_log << std::endl;
         }
     }
 }
