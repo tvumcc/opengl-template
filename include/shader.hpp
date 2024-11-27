@@ -1,25 +1,18 @@
-// Thomas McConkey (piigle) 10/15/2022
-// This file makes dealing with shaders 10 times easier
-// Inspired by learnopengl.com
-// Usage: Shader shader_name = Shader(vertex_shader_source_path, fragment_shader_source_path);
-
 #pragma once
 #include <glm/glm.hpp>
 
 #include <string>
 
 enum class ShaderType {
-    Vertex,
+    Vertex = 0,
     Fragment,
-    ShaderProgram,
+    Compute,
+    Program
 };
 
-class Shader {
+class AbstractShader {
 public:
     unsigned int ID;
-    
-    Shader(const char* vertex_shader_path, const char* fragment_shader_path);
-
     /*Uniform setting methods*/
 
     void set_int(const std::string& variable_name, int value);
@@ -33,8 +26,14 @@ public:
 
     void bind();
     void unbind();
-private:
-    const char* vertex_shader_file_name;
-    const char* fragment_shader_file_name;
-    void checkErrors(unsigned int ID, ShaderType type);
+};
+
+class Shader : public AbstractShader {
+public:
+    Shader(const std::string& vertex_source_path, const std::string& fragment_source_path);
+};
+
+class ComputeShader : public AbstractShader {
+public:
+    ComputeShader(const std::string& source_path);
 };
